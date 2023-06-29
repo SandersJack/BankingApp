@@ -10,13 +10,14 @@ class Account {
 
 public:
     Account();
-    Account(int accountID, string accountName, string email);
+    Account(int accountID, string accountName, string email, int age);
     string GetAccountName(){ return fAccountName;};
 
 private:
     int fAccountID;
     string fAccountName;
     string fEmail;
+    int fAge;
 };
 
 #endif

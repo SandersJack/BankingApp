@@ -3,8 +3,9 @@
 
 #include "Account.hh"
 #include "Commondb.hh"
+#include "Vdb.hh"
 
-class Accountdb {
+class Accountdb: public Vdb {
     public:
         Accountdb();
 
@@ -17,6 +18,7 @@ class Accountdb {
     private:
 
         static Accountdb *fInstance;
+        Commondb *fCommondb;
 
         
 };
