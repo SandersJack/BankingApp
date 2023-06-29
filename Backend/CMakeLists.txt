@@ -5,7 +5,7 @@ project(Banking)
 file(GLOB SOURCES src/*.cc)
 file(GLOB headers src/*.hh)
 
+include_directories(include)
 
 add_executable(Banking Banking.cc ${SOURCES})
-
-include_directories(include)
+target_link_libraries(Banking LINK_PUBLIC sqlite3)
