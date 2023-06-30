@@ -40,14 +40,18 @@ int Accountdb::createTable(){
         "AGE            INT     NOT NULL);";
 
     rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), callback, 0, &zErrMsg);
-
+    int res; 
     if (rc != SQLITE_OK){
         fprintf(stderr, "SQL error: %s \n", zErrMsg);
         sqlite3_free(zErrMsg);
+        cin >> res;
         return 1;
     } else {
         fprintf(stderr, "Table created successfully \n");
+        cin >> res;
     }
+
+    
 
     return 0;
 }

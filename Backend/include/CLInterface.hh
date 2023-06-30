@@ -17,7 +17,7 @@ class CLInterface {
 
         int mainMenu();
 
-        void addAccountPage();
+        int addAccountPage();
         int adminToolsPage();
 
         

@@ -18,19 +18,25 @@ CLInterface *CLInterface::GetInstance() {
 }
 
 void CLInterface::runInterface(){
-
-  int mainresponse = mainMenu();
-  int sreponse;
-  
-  switch (mainresponse)
-  {
-  case 1:
-    addAccountPage(); 
-  case 99:
-    sreponse = adminToolsPage();
-    break;
-  default:
-    break;
+  bool loop = true;
+  while(loop){
+    int mainresponse = mainMenu();
+    int sreponse;
+    cout << mainresponse << endl;
+    switch (mainresponse)
+    {
+    case 0:
+      loop = false;
+      break;
+    case 1:
+      sreponse = addAccountPage(); 
+      break;
+    case 99:
+      sreponse = adminToolsPage();
+      break;
+    default:
+      break;
+  }
   }
 }
 
@@ -45,39 +51,61 @@ int CLInterface::mainMenu(){
   cout << "**                       (2) Modify  Account                       **" << endl;
   cout << "**                                                                 **" << endl;
   cout << "**                       (99) Admin Tools                          **" << endl;
+  cout << "**                       (0) Exit Program                          **" << endl;
   cout << "*********************************************************************" << endl;
   cin >> res;
 
   return res;
 }
 
-void CLInterface::addAccountPage(){
-  system("clear");
-  cout << "***************************** +++++ Page ****************************" << endl;
+int CLInterface::addAccountPage(){
+  
+  bool loop = true;
+  int res;
+  
+    system("clear");
+    cout << "***************************** +++++ Page ****************************" << endl;
+    cout << "**                    (0) Return to Main Menu                      **" << endl;
+    cout << "*********************************************************************" << endl;
+  while(loop){
+    cin >> res;
+
+    switch (res)
+    {
+    case 0:
+      return 0;
+    default:
+      cout << "Invalid Option" << endl;
+    }
+    }
+    return 0;
 }
 
 int CLInterface::adminToolsPage(){
   system("clear");
-
+  bool loop;
   int res;
 
+  
   cout << "***************************** Admin Page ****************************" << endl;
   cout << "**                    (1) Create Account Table to DB               **" << endl;
   cout << "**                                                                 **" << endl;
   cout << "**                    (0) Return to Main Menu                      **" << endl;
   cout << "*********************************************************************" << endl;
+  while(loop){
+    cin >> res;
 
-  cin >> res;
-
-  switch (res)
-  {
-  case 0:
-    return 0;
-  case 1:
-    Accountdb::GetInstance()->createTable();
-    return 1;
-  
-  default:
-    return 1;
+    switch (res)
+    {
+    case 0:
+      return 0;
+    case 1:
+      Accountdb::GetInstance()->createTable();
+    
+    default:
+      cout << "Invalid Option" << endl;
+    }
   }
+  
+  return 0;
 }
