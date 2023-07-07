@@ -16,6 +16,7 @@ class Accountdb: public Vdb {
         Account *getEntry(string query);
 
         int printAllEntry();
+        int printEntry(int id);
 
     private:
 

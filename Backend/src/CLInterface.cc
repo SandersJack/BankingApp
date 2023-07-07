@@ -112,6 +112,7 @@ int CLInterface::viewAccountPage(){
   int res;
   cout << "***************************** Admin Page ****************************" << endl;
   cout << "**                    (1) View All Accounts                        **" << endl;
+  cout << "**                    (2) View Account By ID                       **" << endl;
   cout << "**                                                                 **" << endl;
   cout << "**                    (0) Return to Main Menu                      **" << endl;
   cout << "*********************************************************************" << endl;
@@ -121,6 +122,13 @@ int CLInterface::viewAccountPage(){
   switch(res){
     case 1:
       Accountdb::GetInstance()->printAllEntry();
+      break;
+    case 2:
+      int id;
+      cout << "Query ID: ";
+      cin >> id;
+      Accountdb::GetInstance()->printEntry(id);
+      break;
     case 0:
       return 0;
 

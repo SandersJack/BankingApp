@@ -87,6 +87,31 @@ int Accountdb::printAllEntry() {
     return(0);
 }
 
+int Accountdb::printEntry(int id) {
+    char *iErrMsg = 0;
+    const char* data = "";
+    int rc;
+    int res;
+
+    string sql = "SELECT * from Accounts WHERE ID=" + to_string(id);
+    cout << "*********************************************************************" << endl;
+    cout << "**      ID       **      Name     **     Email      **     Age     **" << endl;
+    cout << "*********************************************************************" << endl;
+    rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), tablecallback, (void*)data, &iErrMsg);
+
+    if( rc != SQLITE_OK ) {
+        fprintf(stderr, "SQL error: %s\n", iErrMsg);
+        sqlite3_free(iErrMsg);
+        cin >> res;
+        return 1;
+    } else {
+        fprintf(stdout, "Operation done successfully\n");
+        cin >> res;
+    }
+
+    return(0);
+}
+
 int Accountdb::saveEntry(Account *entry){
 
     int rc;
