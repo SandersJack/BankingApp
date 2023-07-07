@@ -19,6 +19,7 @@ class CLInterface {
 
         int addAccountPage();
         int adminToolsPage();
+        int viewAccountPage();
 
         
 };

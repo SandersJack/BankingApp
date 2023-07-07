@@ -13,6 +13,13 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
     return(0);
 }
 
+static int tablecallback(void *data, int argc, char **argv, char **azColName) {
+    int i;
+    cout << "**    "<< argv[0] <<"    **      "<< argv[1] << "     **     *****      **     "<<argv[3]<<"      **" << endl;
+    printf("\n");
+    return(0);
+}
+
 Accountdb::Accountdb(): Vdb()
 {
     fCommondb = Commondb::GetInstance();
@@ -33,7 +40,7 @@ int Accountdb::createTable(){
 
     // Create SQL Table //
 
-    sql = "CREATE TABLE PERSONS(" \
+    sql = "CREATE TABLE Accounts(" \
         "ID INT PRIMARY KEY     NOT NULL," \
         "NAME           TEXT    NOT NULL," \
         "EMAIL          TEXT    NOT NULL," \
@@ -54,4 +61,49 @@ int Accountdb::createTable(){
     
 
     return 0;
+}
+
+int Accountdb::printAllEntry() {
+    char *iErrMsg = 0;
+    int rc;
+    const char* data = "";
+    int res;
+    string sql = "SELECT * from Accounts";
+    cout << "*********************************************************************" << endl;
+    cout << "**      ID       **      Name     **     Email      **     Age     **" << endl;
+    cout << "*********************************************************************" << endl;
+    rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), tablecallback, (void*)data, &iErrMsg);
+
+    if( rc != SQLITE_OK ) {
+        fprintf(stderr, "SQL error: %s\n", iErrMsg);
+        sqlite3_free(iErrMsg);
+        cin >> res;
+        return 1;
+    } else {
+        fprintf(stdout, "Operation done successfully\n");
+        cin >> res;
+    }
+
+    return(0);
+}
+
+int Accountdb::saveEntry(Account *entry){
+
+    int rc;
+    char *iErrMsg = 0;
+
+    string sql = "INSERT INTO Accounts (ID,NAME,EMAIL,AGE) " \
+        "VALUES (" + to_string(entry->GetAccountID()) + ", '" + entry->GetAccountName() + "', '" \
+        + entry->GetEmail() + "', " + to_string(entry->GetAge()) + " );";
+
+    rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), callback, 0, &iErrMsg);
+
+    if( rc != SQLITE_OK ){
+      fprintf(stderr, "SQL error: %s\n", iErrMsg);
+      sqlite3_free(iErrMsg);
+    } else {
+      fprintf(stdout, "Records created successfully\n");
+    }
+
+    return(0);
 }

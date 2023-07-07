@@ -15,6 +15,8 @@ class Accountdb: public Vdb {
         int saveEntry(Account *entry);
         Account *getEntry(string query);
 
+        int printAllEntry();
+
     private:
 
         static Accountdb *fInstance;
