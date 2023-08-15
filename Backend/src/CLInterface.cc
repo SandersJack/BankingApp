@@ -31,9 +31,15 @@ void CLInterface::runInterface(){
     case 1:
       sreponse = addAccountPage(); 
       break;
+    case 2:
+      sreponse = viewModifyPage();
+      break;
     case 3:
       sreponse = viewAccountPage();
       break;  
+    case 4:
+      sreponse = loginAccountPage();
+      break;
     case 99:
       sreponse = adminToolsPage();
       break;
@@ -53,6 +59,7 @@ int CLInterface::mainMenu(){
   cout << "**                       (1) Add New Account                       **" << endl;
   cout << "**                       (2) Modify  Account                       **" << endl;
   cout << "**                       (3) View    Accounts                      **" << endl;
+  cout << "**                       (4) Login to Account                      **" << endl;
   cout << "**                                                                 **" << endl;
   cout << "**                       (99) Admin Tools                          **" << endl;
   cout << "**                       (0) Exit Program                          **" << endl;
@@ -65,7 +72,9 @@ int CLInterface::mainMenu(){
 int CLInterface::addAccountPage(){
   
   bool loop = true;
-  int age;
+  int dob;
+  string pass;
+  string ques;
   string name;
   string email;
 
@@ -87,11 +96,21 @@ int CLInterface::addAccountPage(){
     if(email == "0")
       return 0;
     nAccount->SetEmail(email);  
-    cout << "Age: ";
-    cin >> age;
-    if(age == 0)
+    cout << "DOB: ";
+    cin >> dob;
+    if(dob == 0)
       return 0;
-    nAccount->SetAge(age);
+    nAccount->SetDOB(dob);
+    cout << "Set a Password: ";
+    cin >> pass;
+    if(pass == "0")
+      return 0;
+    nAccount->SetPassword(pass);
+    cout << "Security Question. What was the name of your first pet? ";
+    cin >> ques;
+    if(ques == "0")
+      return 0;
+    nAccount->SetQuestion(ques);
 
     cout << "Do you want to save this new Account to the Database? [Y/N]" << endl;
     string ans;
@@ -107,10 +126,32 @@ int CLInterface::addAccountPage(){
     return 0;
 }
 
+int CLInterface::viewModifyPage(){
+  system("clear");
+  int res;
+  int id;
+  cout << "***************************** Modify Page ***************************" << endl;
+  cout << "**                    (1) Delete Account                           **" << endl;
+  cout << "**                                                                 **" << endl;
+  cout << "**                    (0) Return to Main Menu                      **" << endl;
+  cout << "*********************************************************************" << endl;
+  cin >> res;
+  switch(res){
+    case 1:
+      cout << "Enter ID: ";
+      cin >> id;
+      Accountdb::GetInstance()->deleteAccount(id);
+      break;
+    case 0:
+      return 0;
+  }
+  return 0;
+}
+
 int CLInterface::viewAccountPage(){
   system("clear");
   int res;
-  cout << "***************************** Admin Page ****************************" << endl;
+  cout << "***************************** Account Page **************************" << endl;
   cout << "**                    (1) View All Accounts                        **" << endl;
   cout << "**                    (2) View Account By ID                       **" << endl;
   cout << "**                                                                 **" << endl;
@@ -133,6 +174,46 @@ int CLInterface::viewAccountPage(){
       return 0;
 
   }
+  return 0;
+}
+
+int CLInterface::loginAccountPage(){
+  
+  int res;
+  int id;
+  while(true){
+    system("clear");
+    cout << "**********************  Login Account Page **************************" << endl;
+    cout << "**                                                                 **" << endl;
+    cout << "**                    (0) Return to Main Menu                      **" << endl;
+    cout << "*********************************************************************" << endl;
+    cout << "Please enter Account ID: ";
+    cin >> id;
+    if(id == 0)
+      return 0;
+
+    Account *loginAccount = Accountdb::GetInstance()->getAccount(id);
+    std::cout << "Account Loaded" << std::endl;
+    int seqRes = loginAccount->securityCheck();
+    if(seqRes == 50){
+      cin >> res;
+      continue;
+    } else if(seqRes == 0){
+      accountPage(loginAccount);
+    }
+  }
+  cin >> res;
+  return 0;
+}
+
+int CLInterface::accountPage(Account *loginAccount){
+  system("clear");
+  int res;
+  cout << "************************* Account Page ******************************" << endl;
+  cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
+  cout << "**                    (0) Logout of account                        **" << endl;
+  cout << "*********************************************************************" << endl; 
+  cin >> res;
   return 0;
 }
 

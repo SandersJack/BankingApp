@@ -1,6 +1,8 @@
 #ifndef CLInterface_H
 #define CLInterface_H 
 
+#include "Account.hh"
+
 using namespace std;
 
 class CLInterface {
@@ -20,6 +22,10 @@ class CLInterface {
         int addAccountPage();
         int adminToolsPage();
         int viewAccountPage();
+        int loginAccountPage();
+        int viewModifyPage();
+
+        int accountPage(Account *loginAccount);
 
         
 };

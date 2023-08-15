@@ -4,6 +4,9 @@
 #include "Account.hh"
 #include "Commondb.hh"
 #include "Vdb.hh"
+#include <vector>
+
+using namespace std;
 
 class Accountdb: public Vdb {
     public:
@@ -13,10 +16,11 @@ class Accountdb: public Vdb {
 
         int createTable();
         int saveEntry(Account *entry);
-        Account *getEntry(string query);
+        int deleteAccount(int id);
 
         int printAllEntry();
         int printEntry(int id);
+        Account *getAccount(int id);
 
     private:
 
