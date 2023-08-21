@@ -33,7 +33,6 @@ static int tablecallback(void *data, int argc, char **argv, char **azColName) {
 int select_callback(void *p_data, int num_fields, char **argv, char **szColName)
 {
     AccountRecord* aRecord = static_cast<AccountRecord*>(p_data);
-    cout << num_fields << endl;
     for(int i = 0; i < num_fields; i++)
         {
             if (strcmp(szColName[i], "ID") == 0)
@@ -210,7 +209,8 @@ Account *Accountdb::getAccount(int id){
     string sql = "SELECT * from Accounts WHERE ID=" + to_string(id);
 
 
-    rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), select_callback, &record, &iErrMsg);
+    //rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), select_callback, &record, &iErrMsg);
+    rc = executeSQLQuery(fCommondb->GetDatabase(),sql.c_str(), select_callback, &record);
 
     if( rc != SQLITE_OK ) {
       fprintf(stderr, "SQL error: %s\n", iErrMsg);
