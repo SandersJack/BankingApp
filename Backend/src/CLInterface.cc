@@ -1,6 +1,10 @@
 #include "CLInterface.hh"
+
 #include "Accountdb.hh"
 #include "Account.hh"
+
+#include "CurrentAccountdb.hh"
+#include "CurrentAccount.hh"
 
 #include <stdlib.h>
 #include <iostream>
@@ -23,6 +27,7 @@ void CLInterface::runInterface(){
   while(loop){
     int mainresponse = mainMenu();
     int sreponse;
+    std::cout << mainresponse << std::endl;
     switch (mainresponse)
     {
     case 0:
@@ -225,6 +230,7 @@ int CLInterface::adminToolsPage(){
   
   cout << "***************************** Admin Page ****************************" << endl;
   cout << "**                    (1) Create Account Table to DB               **" << endl;
+  cout << "**                    (2) Create CurrentAccount Table to DB        **" << endl;
   cout << "**                                                                 **" << endl;
   cout << "**                    (0) Return to Main Menu                      **" << endl;
   cout << "*********************************************************************" << endl;
@@ -237,7 +243,10 @@ int CLInterface::adminToolsPage(){
       return 0;
     case 1:
       Accountdb::GetInstance()->createTable();
-    
+      break;
+    case 2:
+      CurrentAccountdb::GetInstance()->createTable();
+      break;
     default:
       cout << "Invalid Option" << endl;
     }
