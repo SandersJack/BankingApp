@@ -57,6 +57,7 @@ int Vdb::executeSQLQuery(sqlite3 *db,
           }
      } else {
           std::cout << "RESULT NOT FOUND" << std::endl;
+          return 420;
      }
 
     return sqlite3_finalize(stmt);

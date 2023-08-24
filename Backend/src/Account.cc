@@ -1,4 +1,5 @@
 #include "Account.hh"
+#include "CurrentAccountdb.hh"
 
 Account::Account(): fAccountID(0), fAccountName(""), fEmail(""), fDOB(0), fPassword(""), fQuestion("")
 {
@@ -51,4 +52,12 @@ int Account::securityCheck(){
     }
 
     return 0;
+}
+
+void Account::printAccounts(){
+    // See if there is a current account
+    cout << "*********************************************************************" << endl;
+    cout << "**       Type       **      Value           **     IntrestRate     **" << endl;
+    cout << "*********************************************************************" << endl;
+    CurrentAccountdb::GetInstance()->printEntry(fAccountID);
 }

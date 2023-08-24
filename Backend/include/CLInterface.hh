@@ -26,6 +26,9 @@ class CLInterface {
         int viewModifyPage();
 
         int accountPage(Account *loginAccount);
+        int productsPage(Account *loginAccount);
+        int addProductsPage(Account *loginAccount);
+        int closeProductsPage(Account *loginAccount);
 
         
 };

@@ -1,4 +1,5 @@
 #include "CLInterface.hh"
+#include "CommonBank.hh"
 
 #include "Accountdb.hh"
 #include "Account.hh"
@@ -199,7 +200,7 @@ int CLInterface::loginAccountPage(){
 
     Account *loginAccount = Accountdb::GetInstance()->getAccount(id);
     std::cout << "Account Loaded" << std::endl;
-    int seqRes = loginAccount->securityCheck();
+    int seqRes = 0;//loginAccount->securityCheck();
     if(seqRes == 50){
       cin >> res;
       continue;
@@ -214,11 +215,92 @@ int CLInterface::loginAccountPage(){
 int CLInterface::accountPage(Account *loginAccount){
   system("clear");
   int res;
-  cout << "************************* Account Page ******************************" << endl;
+  while(true){
+    system("clear");
+    cout << "************************* Account Page ******************************" << endl;
+    cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
+    cout << "**                    (1) View Products                            **" << endl;
+    cout << "**                    (2) Add Products                             **" << endl;
+    cout << "**                    (3) Close Products                           **" << endl;
+    cout << "**                    (0) Logout of account                        **" << endl;
+    cout << "*********************************************************************" << endl; 
+    cin >> res;
+    switch(res){
+      case 1:
+        productsPage(loginAccount);
+        break;
+      case 2:
+        addProductsPage(loginAccount);
+      case 3:
+        closeProductsPage(loginAccount);
+      case 0:
+        return 0;
+    }
+  }
+  return 0;
+}
+
+int CLInterface::productsPage(Account *loginAccount){
+  system("clear");
+  int res;
+  cout << "************************* Accounts Page *****************************" << endl;
   cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
-  cout << "**                    (0) Logout of account                        **" << endl;
+  cout << "**                    (0) Return to Account Page                   **" << endl;
+  cout << "*********************************************************************" << endl; 
+  loginAccount->printAccounts();
   cout << "*********************************************************************" << endl; 
   cin >> res;
+  return 0;
+}
+
+int CLInterface::addProductsPage(Account *loginAccount){
+  system("clear");
+  int res;
+  cout << "********************** Add Products Page ****************************" << endl;
+  cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
+  cout << "**                    (1) Add Current Account                      **" << endl;
+  cout << "**                    (0) Return to Account Page                   **" << endl;
+  cout << "*********************************************************************" << endl; 
+  cin >> res;
+  switch(res){
+    case 1:
+    {
+      int intrestRate = CommonBank::CurrentAccount_INT;
+      CurrentAccount *newProd = new CurrentAccount(loginAccount->GetAccountID(), 0, intrestRate);
+      CurrentAccountdb::GetInstance()->saveEntry(newProd);
+      break;
+    }
+    case 0:
+      return 0;
+  }
+  return 0;
+}
+
+int CLInterface::closeProductsPage(Account *loginAccount){
+  system("clear");
+  int res;
+  while(true){
+    cout << "************************ Close Products Page ************************" << endl;
+    cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
+    cout << "**                    (1) Close Current Account                    **" << endl;
+    cout << "**                    (0) Return to Account Page                   **" << endl;
+    cout << "*********************************************************************" << endl; 
+    cin >> res;
+    switch(res){
+      case 1:
+      { 
+        CurrentAccount *nAccount = CurrentAccountdb::GetInstance()->getCurrentAccount(loginAccount->GetAccountID());
+        if(nAccount->GetValue() > 0){
+          cout << "Account cant be closed, please transfer or withraw the " << nAccount->GetValue() << " value still in the account." << endl;
+        } else {
+          CurrentAccountdb::GetInstance()->deleteEntry(loginAccount->GetAccountID());
+        }
+        break;
+      }
+      case 0:
+        return 0;
+    }
+  }
   return 0;
 }
 

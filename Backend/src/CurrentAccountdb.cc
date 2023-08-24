@@ -22,7 +22,7 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
 
 static int tablecallback(void *data, int argc, char **argv, char **azColName) {
     int i;
-    cout << "**    "<< argv[0] <<"    **      "<< argv[1] << "     **     "<<argv[3]<<"      **" << endl;
+    cout << "** Current Account  **      "<< argv[1] << "             **     "<<argv[2]<<"             **" << endl;
     printf("\n");
     return(0);
 }
@@ -96,22 +96,10 @@ int CurrentAccountdb::printEntry(int id) {
     int rc;
     int res;
 
-    string sql = "SELECT * from Accounts WHERE ID=" + to_string(id);
-    cout << "*********************************************************************" << endl;
-    cout << "**      ID       **      Value     **     IntrestRate              **" << endl;
-    cout << "*********************************************************************" << endl;
-    rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), tablecallback, (void*)data, &iErrMsg);
-
-    if( rc != SQLITE_OK ) {
-        fprintf(stderr, "SQL error: %s\n", iErrMsg);
-        sqlite3_free(iErrMsg);
-        cin >> res;
-        return 1;
-    } else {
-        fprintf(stdout, "Operation done successfully\n");
-        cin >> res;
-    }
-
+    string sql = "SELECT * from CurrentAccounts WHERE ID=" + to_string(id);
+    //rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), tablecallback, (void*)data, &iErrMsg);
+    rc = executeSQLQuery(fCommondb->GetDatabase(),sql.c_str(), tablecallback, 0);
+    
     return(0);
 }
 
@@ -136,12 +124,13 @@ int CurrentAccountdb::saveEntry(CurrentAccount *entry){
     return(0);
 }
 
-int CurrentAccountdb::deleteAccount(int id){
+int CurrentAccountdb::deleteEntry(int id){
 
     int rc;
     int res;    
     char *iErrMsg = 0;
 
+    cout << to_string(id) << endl;
     string sql = "DELETE FROM CurrentAccounts WHERE ID="+ to_string(id);
 
     rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), callback, 0, &iErrMsg);
@@ -163,7 +152,7 @@ CurrentAccount *CurrentAccountdb::getCurrentAccount(int id){
     CurrentAccount *outAccount = new CurrentAccount();
 
     currentAccountRecord record;
-    string sql = "SELECT * from Accounts WHERE ID=" + to_string(id);
+    string sql = "SELECT * from CurrentAccounts WHERE ID=" + to_string(id);
 
 
     //rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), select_callback, &record, &iErrMsg);
@@ -172,11 +161,13 @@ CurrentAccount *CurrentAccountdb::getCurrentAccount(int id){
     if( rc != SQLITE_OK ) {
       fprintf(stderr, "SQL error: %s\n", iErrMsg);
       sqlite3_free(iErrMsg);
+      return nullptr;
     } else {
         fprintf(stdout, "Operation done successfully\n");
     }
     outAccount->SetAccountID(record.ID[0]);
     outAccount->SetValue(record.Value[0]);
-    outAccount->SetIntrestRate(record.IntrestRate[0]);
+    outAccount->SetIntrestRate(0);
+
     return outAccount; //2678857
 }

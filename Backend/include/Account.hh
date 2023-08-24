@@ -1,6 +1,5 @@
 #ifndef Account_H
 #define Account_H 
-
 #include <ctime>
 #include <iostream>
 
@@ -33,6 +32,7 @@ public:
     void GenerateID(){fAccountID = randID();}
 
     int securityCheck();
+    void printAccounts();
 
     
 private:
