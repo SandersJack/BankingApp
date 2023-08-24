@@ -2,6 +2,7 @@
 #define Account_H 
 #include <ctime>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -32,7 +33,7 @@ public:
     void GenerateID(){fAccountID = randID();}
 
     int securityCheck();
-    void printAccounts();
+    vector<int> printAccounts();
 
     
 private:

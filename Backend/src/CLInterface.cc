@@ -243,12 +243,49 @@ int CLInterface::accountPage(Account *loginAccount){
 int CLInterface::productsPage(Account *loginAccount){
   system("clear");
   int res;
-  cout << "************************* Accounts Page *****************************" << endl;
+  cout << "************************* Producs Page *****************************" << endl;
   cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
   cout << "**                    (0) Return to Account Page                   **" << endl;
   cout << "*********************************************************************" << endl; 
-  loginAccount->printAccounts();
+  vector<int> products = loginAccount->printAccounts();
   cout << "*********************************************************************" << endl; 
+  cout << "Select Product:" << endl;
+  for(int i{0}; i<products.size(); i++){
+    if(products[i]==0){
+      cout << "A: Current Account" << endl;
+    }
+  }
+  string res_char;
+  cin >> res_char;
+  if(res_char == "A"){
+      CurrentAccount *_currentAccount = CurrentAccountdb::GetInstance()->getCurrentAccount(loginAccount->GetAccountID());
+      cout << "1: Deposit" << endl;
+      cout << "2: Withdraw" << endl;
+      cout << "3: Transfer" << endl;
+      cin >> res;
+      switch(res){
+        case 1:
+        {
+          cout << "How much do you wan to deposit?" << endl;
+          cin >> res_char;
+          double change_val = stod(res_char);
+          _currentAccount->_toValue(change_val);
+          CurrentAccountdb::GetInstance()->updateEntry(_currentAccount);
+          break;
+        }
+        case 2:
+        {
+          cout << "How much do you wan to withdraw?" << endl;
+          cin >> res_char;
+          double change_val = -stod(res_char);
+          _currentAccount->_toValue(change_val);
+          CurrentAccountdb::GetInstance()->updateEntry(_currentAccount);
+          break;
+        }
+        case 3:
+          cout << "What account do you want transfer to?" << endl;
+      }
+  }
   cin >> res;
   return 0;
 }
@@ -265,7 +302,7 @@ int CLInterface::addProductsPage(Account *loginAccount){
   switch(res){
     case 1:
     {
-      int intrestRate = CommonBank::CurrentAccount_INT;
+      double intrestRate = CommonBank::CurrentAccount_INT;
       CurrentAccount *newProd = new CurrentAccount(loginAccount->GetAccountID(), 0, intrestRate);
       CurrentAccountdb::GetInstance()->saveEntry(newProd);
       break;

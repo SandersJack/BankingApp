@@ -99,8 +99,11 @@ int CurrentAccountdb::printEntry(int id) {
     string sql = "SELECT * from CurrentAccounts WHERE ID=" + to_string(id);
     //rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), tablecallback, (void*)data, &iErrMsg);
     rc = executeSQLQuery(fCommondb->GetDatabase(),sql.c_str(), tablecallback, 0);
-    
-    return(0);
+    if(rc == 420){
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 int CurrentAccountdb::saveEntry(CurrentAccount *entry){
@@ -111,6 +114,27 @@ int CurrentAccountdb::saveEntry(CurrentAccount *entry){
     string sql = "INSERT INTO CurrentAccounts (ID,VALUE,INTRESTRATE) " \
         "VALUES (" + to_string(entry->GetAccountID()) + ", '" + to_string(entry->GetValue()) + "', '" \
         + to_string(entry->GetIntrestrate()) + "' );";
+
+    rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), callback, 0, &iErrMsg);
+
+    if( rc != SQLITE_OK ){
+      fprintf(stderr, "SQL error: %s\n", iErrMsg);
+      sqlite3_free(iErrMsg);
+    } else {
+      fprintf(stdout, "Records created successfully\n");
+    }
+
+    return(0);
+}
+
+int CurrentAccountdb::updateEntry(CurrentAccount *entry){
+
+    int rc;
+    char *iErrMsg = 0;
+
+    string sql = "UPDATE CurrentAccounts SET " \
+        "VALUE = " + to_string(entry->GetValue()) + ", " \
+        "INTRESTRATE = " + to_string(entry->GetIntrestrate()) + " WHERE ID="+ to_string(entry->GetAccountID())  + ";";
 
     rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), callback, 0, &iErrMsg);
 

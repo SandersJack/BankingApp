@@ -54,10 +54,16 @@ int Account::securityCheck(){
     return 0;
 }
 
-void Account::printAccounts(){
+vector<int> Account::printAccounts(){
     // See if there is a current account
+    vector<int> accounts;
     cout << "*********************************************************************" << endl;
     cout << "**       Type       **      Value           **     IntrestRate     **" << endl;
     cout << "*********************************************************************" << endl;
-    CurrentAccountdb::GetInstance()->printEntry(fAccountID);
+    int resCA = CurrentAccountdb::GetInstance()->printEntry(fAccountID);
+    if(resCA){
+        accounts.push_back(0);
+    }
+
+    return accounts;
 }

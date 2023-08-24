@@ -17,12 +17,13 @@ class CurrentAccountdb: public Vdb {
 
         int createTable();
         int saveEntry(CurrentAccount *entry);
+        int updateEntry(CurrentAccount *entry);
         int deleteEntry(int id);
 
         int printAllEntry();
         int printEntry(int id);
         CurrentAccount *getCurrentAccount(int id);
-
+        
     private:
 
         static CurrentAccountdb *fInstance;
