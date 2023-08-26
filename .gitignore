@@ -1,2 +1,5 @@
 Backend/build
 .vscode
+
+Dashboard/.venv/
+Dashboard/pages/__pycache__/
