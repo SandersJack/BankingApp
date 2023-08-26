@@ -65,3 +65,41 @@ body {
     color: #097969;
     height: 70px;
 }
+
+.Tnumber-box {
+    float: left;
+    width: 50%; 
+}
+
+.Tnumber-innnerbox {
+    border: 2px solid black; 
+    margin: 10px;
+}
+
+.Tnumber-title {
+    text-align: center;
+}
+
+.Tnumber {
+    text-align: center;
+}
+
+.plot-title {
+    text-align: center;
+}
+
+.plot-innerbox{
+    border: 2px solid black;
+    margin: 10px;
+}
+
+.-box {
+    float: left;
+    width: 50%
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
