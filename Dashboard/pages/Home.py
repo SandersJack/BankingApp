@@ -39,29 +39,31 @@ def sum_column(tablename):
         ''' % tablename
     return run_query(q)["SUM(VALUE)"][0]
 
-Products = ["CurrentAccounts"]
+Products = ["CurrentAccounts","SavingsAccounts"]
 
 def serve_layout():
     
+    print("Start Data AQ")
     data_rows = pd.DataFrame()
     data_rows["name"] = Products
     data_rows["row_count"] = [get_table_row_count(t) for t in Products]
     
-    
     NAccounts = get_table_row_count("Accounts")
     total_value = 0
     sum_col = [] 
+    emty_col = []
     for i in range(len(Products)):
         sum_col.append(sum_column(Products[i]))
         total_value += sum_col[i]
+        emty_col.append(0)
     TDeposits = total_value
     deposits = pd.DataFrame({"Products":Products,
-                    "TValues":sum_col})
+                    "TValues":sum_col, "Empty":emty_col})
+    print("End Data AQ")
+    graph = dcc.Graph(id='bar_plot',figure=px.bar(data_rows, x="name", y="row_count",color="name",labels={'name':'Products','row_count':'Number'},hover_data=['row_count']))
     
-    graph = dcc.Graph(id='bar_plot',figure=px.bar(data_rows, x="name", y="row_count",labels={'name':'Products','row_count':'Number'}))
-    
-    figure_dep = px.bar(deposits, x="TValues", color="Products", labels={'TValues':'Total Deposits'}, orientation='h')
-    figure_dep.update_layout(yaxis={'visible': False, 'showticklabels': False})
+    figure_dep = px.bar(deposits, y="Empty", x="TValues", color="Products", labels={'TValues':'Total Deposits'}, orientation='h',hover_data=['TValues'])
+    figure_dep.update_layout(yaxis={'visible': False, 'showticklabels': False},barmode='stack')
     graph_deposits = dcc.Graph(id='bar_plot_deposits',figure=figure_dep)
     
     layout = html.Div(children=[
