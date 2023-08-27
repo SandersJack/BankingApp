@@ -7,6 +7,9 @@
 #include "CurrentAccountdb.hh"
 #include "CurrentAccount.hh"
 
+#include "SavingsAccountdb.hh"
+#include "SavingsAccount.hh"
+
 #include <stdlib.h>
 #include <iostream>
 
@@ -248,11 +251,13 @@ int CLInterface::productsPage(Account *loginAccount){
   cout << "**                    (0) Return to Account Page                   **" << endl;
   cout << "*********************************************************************" << endl; 
   vector<int> products = loginAccount->printAccounts();
-  cout << "*********************************************************************" << endl; 
   cout << "Select Product:" << endl;
   for(int i{0}; i<products.size(); i++){
     if(products[i]==0){
       cout << "A: Current Account" << endl;
+    }
+    if(products[i]==1){
+      cout << "B: Current Account" << endl;
     }
   }
   string res_char;
@@ -283,7 +288,77 @@ int CLInterface::productsPage(Account *loginAccount){
           break;
         }
         case 3:
+        {
           cout << "What account do you want transfer to?" << endl;
+          for(int i{0}; i<products.size(); i++){
+            if(products[i]==0){
+              cout << "B: Savings Account" << endl;
+            }
+          }
+          string res_char_trans;
+          cin >> res_char_trans;
+          CommonAccount *transfer_to = nullptr;
+          if(res_char_trans == "B"){
+            transfer_to = SavingsAccountdb::GetInstance()->getSavingsAccount(loginAccount->GetAccountID());
+          } else {
+            cout << "[ERROR] Not valid Product" << endl;
+            break;
+          }
+          cout << "How much do you want to transfer?" << endl;
+          double trans;
+          cin >> trans;
+          _currentAccount->transferTo(transfer_to, trans);
+          break;
+        }
+      }
+  } else if(res_char == "B"){
+      SavingsAccount *_savingAccount = SavingsAccountdb::GetInstance()->getSavingsAccount(loginAccount->GetAccountID());
+      cout << "1: Deposit" << endl;
+      cout << "2: Withdraw" << endl;
+      cout << "3: Transfer" << endl;
+      cin >> res;
+      switch(res){
+        case 1:
+        {
+          cout << "How much do you wan to deposit?" << endl;
+          cin >> res_char;
+          double change_val = stod(res_char);
+          _savingAccount->_toValue(change_val);
+          SavingsAccountdb::GetInstance()->updateEntry(_savingAccount);
+          break;
+        }
+        case 2:
+        {
+          cout << "How much do you wan to withdraw?" << endl;
+          cin >> res_char;
+          double change_val = -stod(res_char);
+          _savingAccount->_toValue(change_val);
+          SavingsAccountdb::GetInstance()->updateEntry(_savingAccount);
+          break;
+        }
+        case 3:
+        {
+          cout << "What account do you want transfer to?" << endl;
+          for(int i{0}; i<products.size(); i++){
+            if(products[i]==0){
+              cout << "A: Current Account" << endl;
+            }
+          }
+          string res_char_trans;
+          cin >> res_char_trans;
+          CommonAccount *transfer_to = nullptr;
+          if(res_char_trans == "A"){
+            transfer_to = CurrentAccountdb::GetInstance()->getCurrentAccount(loginAccount->GetAccountID());
+          } else {
+            cout << "[ERROR] Not valid Product" << endl;
+            break;
+          }
+          cout << "How much do you want to transfer?" << endl;
+          double trans;
+          cin >> trans;
+          _savingAccount->transferTo(transfer_to, trans);
+          break;
+        }
       }
   }
   cin >> res;
@@ -296,6 +371,7 @@ int CLInterface::addProductsPage(Account *loginAccount){
   cout << "********************** Add Products Page ****************************" << endl;
   cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
   cout << "**                    (1) Add Current Account                      **" << endl;
+  cout << "**                    (2) Add Savings Account                      **" << endl;
   cout << "**                    (0) Return to Account Page                   **" << endl;
   cout << "*********************************************************************" << endl; 
   cin >> res;
@@ -305,6 +381,13 @@ int CLInterface::addProductsPage(Account *loginAccount){
       double intrestRate = CommonBank::CurrentAccount_INT;
       CurrentAccount *newProd = new CurrentAccount(loginAccount->GetAccountID(), 0, intrestRate);
       CurrentAccountdb::GetInstance()->saveEntry(newProd);
+      break;
+    }
+    case 2:
+    {
+      double intrestRate = CommonBank::SavingsAccount_INT;
+      SavingsAccount *newProd = new SavingsAccount(loginAccount->GetAccountID(), 0, intrestRate);
+      SavingsAccountdb::GetInstance()->saveEntry(newProd);
       break;
     }
     case 0:
@@ -320,6 +403,7 @@ int CLInterface::closeProductsPage(Account *loginAccount){
     cout << "************************ Close Products Page ************************" << endl;
     cout << "**                        ID = " << loginAccount->GetAccountID() << "                             **" << endl;
     cout << "**                    (1) Close Current Account                    **" << endl;
+    cout << "**                    (2) Close Savings Account                    **" << endl;
     cout << "**                    (0) Return to Account Page                   **" << endl;
     cout << "*********************************************************************" << endl; 
     cin >> res;
@@ -331,6 +415,16 @@ int CLInterface::closeProductsPage(Account *loginAccount){
           cout << "Account cant be closed, please transfer or withraw the " << nAccount->GetValue() << " value still in the account." << endl;
         } else {
           CurrentAccountdb::GetInstance()->deleteEntry(loginAccount->GetAccountID());
+        }
+        break;
+      }
+      case 2:
+      { 
+        SavingsAccount *nAccount = SavingsAccountdb::GetInstance()->getSavingsAccount(loginAccount->GetAccountID());
+        if(nAccount->GetValue() > 0){
+          cout << "Account cant be closed, please transfer or withraw the " << nAccount->GetValue() << " value still in the account." << endl;
+        } else {
+          SavingsAccountdb::GetInstance()->deleteEntry(loginAccount->GetAccountID());
         }
         break;
       }
@@ -350,6 +444,7 @@ int CLInterface::adminToolsPage(){
   cout << "***************************** Admin Page ****************************" << endl;
   cout << "**                    (1) Create Account Table to DB               **" << endl;
   cout << "**                    (2) Create CurrentAccount Table to DB        **" << endl;
+  cout << "**                    (3) Create SavingsAccount Table to DB        **" << endl;
   cout << "**                                                                 **" << endl;
   cout << "**                    (0) Return to Main Menu                      **" << endl;
   cout << "*********************************************************************" << endl;
@@ -365,6 +460,9 @@ int CLInterface::adminToolsPage(){
       break;
     case 2:
       CurrentAccountdb::GetInstance()->createTable();
+      break;
+    case 3:
+      SavingsAccountdb::GetInstance()->createTable();
       break;
     default:
       cout << "Invalid Option" << endl;

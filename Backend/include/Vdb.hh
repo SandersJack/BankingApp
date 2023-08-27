@@ -1,6 +1,8 @@
 #ifndef Vdb_H
 #define Vdb_H 
 
+#include "CommonAccount.hh"
+
 #include <string>
 #include <iostream>
 #include <stdio.h>
@@ -12,6 +14,8 @@ class Vdb {
 
         int executeSQLQuery(sqlite3 *db,               
                             const char *zSql, int (*function)(void *, int , char **, char **), void *p_data);
+
+        int updateEntry(CommonAccount *entry);
 
     private:
     

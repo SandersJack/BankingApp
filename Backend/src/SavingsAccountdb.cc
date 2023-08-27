@@ -1,8 +1,8 @@
-#include "CurrentAccountdb.hh"
+#include "SavingsAccountdb.hh"
 #include "Commondb.hh"
 #include <cstring>
 
-struct currentAccountRecord{
+struct SavingsAccountRecord{
     vector<int> ID;
     vector<double> Value;
     vector<double> IntrestRate;
@@ -22,14 +22,14 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
 
 static int tablecallback(void *data, int argc, char **argv, char **azColName) {
     int i;
-    cout << "** Current Account  **      "<< argv[1] << "             **     "<<argv[2]<<"             **" << endl;
+    cout << "** Savings Account  **      "<< argv[1] << "             **     "<<argv[2]<<"             **" << endl;
     printf("\n");
     return(0);
 }
 
 static int select_callback(void *p_data, int num_fields, char **argv, char **szColName)
 {
-    currentAccountRecord* aRecord = static_cast<currentAccountRecord*>(p_data);
+    SavingsAccountRecord* aRecord = static_cast<SavingsAccountRecord*>(p_data);
     for(int i = 0; i < num_fields; i++)
         {
             if (strcmp(szColName[i], "ID") == 0)
@@ -48,27 +48,27 @@ static int select_callback(void *p_data, int num_fields, char **argv, char **szC
     return 0;
 }
 
-CurrentAccountdb::CurrentAccountdb(): Vdb()
+SavingsAccountdb::SavingsAccountdb(): Vdb()
 {
     fCommondb = Commondb::GetInstance();
 }
 
-CurrentAccountdb *CurrentAccountdb::fInstance = nullptr;
+SavingsAccountdb *SavingsAccountdb::fInstance = nullptr;
 
-CurrentAccountdb *CurrentAccountdb::GetInstance() {
+SavingsAccountdb *SavingsAccountdb::GetInstance() {
   if(!fInstance)
-    fInstance = new CurrentAccountdb();
+    fInstance = new SavingsAccountdb();
   return fInstance;
 }
 
-int CurrentAccountdb::createTable(){
+int SavingsAccountdb::createTable(){
     string sql;
     int rc;
     char *zErrMsg = 0;
 
     // Create SQL Table //
 
-    sql = "CREATE TABLE CurrentAccounts(" \
+    sql = "CREATE TABLE SavingsAccounts(" \
         "ID INT PRIMARY KEY     NOT NULL," \
         "VALUE          FLOAT    NOT NULL," \
         "INTRESTRATE    FLOAT    NOT NULL);";
@@ -90,13 +90,13 @@ int CurrentAccountdb::createTable(){
     return 0;
 }
 
-int CurrentAccountdb::printEntry(int id) {
+int SavingsAccountdb::printEntry(int id) {
     char *iErrMsg = 0;
     const char* data = "";
     int rc;
     int res;
 
-    string sql = "SELECT * from CurrentAccounts WHERE ID=" + to_string(id);
+    string sql = "SELECT * from SavingsAccounts WHERE ID=" + to_string(id);
     //rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), tablecallback, (void*)data, &iErrMsg);
     rc = executeSQLQuery(fCommondb->GetDatabase(),sql.c_str(), tablecallback, 0);
     if(rc == 420){
@@ -106,12 +106,12 @@ int CurrentAccountdb::printEntry(int id) {
     }
 }
 
-int CurrentAccountdb::saveEntry(CurrentAccount *entry){
+int SavingsAccountdb::saveEntry(SavingsAccount *entry){
 
     int rc;
     char *iErrMsg = 0;
 
-    string sql = "INSERT INTO CurrentAccounts (ID,VALUE,INTRESTRATE) " \
+    string sql = "INSERT INTO SavingsAccounts (ID,VALUE,INTRESTRATE) " \
         "VALUES (" + to_string(entry->GetAccountID()) + ", '" + to_string(entry->GetValue()) + "', '" \
         + to_string(entry->GetIntrestrate()) + "' );";
 
@@ -127,14 +127,14 @@ int CurrentAccountdb::saveEntry(CurrentAccount *entry){
     return(0);
 }
 
-int CurrentAccountdb::deleteEntry(int id){
+int SavingsAccountdb::deleteEntry(int id){
 
     int rc;
     int res;    
     char *iErrMsg = 0;
 
     cout << to_string(id) << endl;
-    string sql = "DELETE FROM CurrentAccounts WHERE ID="+ to_string(id);
+    string sql = "DELETE FROM SavingsAccounts WHERE ID="+ to_string(id);
 
     rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), callback, 0, &iErrMsg);
     
@@ -142,20 +142,20 @@ int CurrentAccountdb::deleteEntry(int id){
       fprintf(stderr, "SQL error: %s\n", iErrMsg);
       sqlite3_free(iErrMsg);
     } else {
-      fprintf(stdout, "CurrentAccount deleted successfully \n");
+      fprintf(stdout, "SavingsAccount deleted successfully \n");
     }
     cin >> res;
     return(0);
 }
 
-CurrentAccount *CurrentAccountdb::getCurrentAccount(int id){
+SavingsAccount *SavingsAccountdb::getSavingsAccount(int id){
     int rc;
     char *iErrMsg = 0;
 
-    CurrentAccount *outAccount = new CurrentAccount();
+    SavingsAccount *outAccount = new SavingsAccount();
 
-    currentAccountRecord record;
-    string sql = "SELECT * from CurrentAccounts WHERE ID=" + to_string(id);
+    SavingsAccountRecord record;
+    string sql = "SELECT * from SavingsAccounts WHERE ID=" + to_string(id);
 
 
     //rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), select_callback, &record, &iErrMsg);
@@ -168,7 +168,7 @@ CurrentAccount *CurrentAccountdb::getCurrentAccount(int id){
     } else {
         fprintf(stdout, "Operation done successfully\n");
     }
-    outAccount->SetProductName("CurrentAccounts");
+    outAccount->SetProductName("SavingsAccounts");
     outAccount->SetAccountID(record.ID[0]);
     outAccount->SetValue(record.Value[0]);
     outAccount->SetIntrestRate(record.IntrestRate[0]);

@@ -1,4 +1,5 @@
 #include "Vdb.hh"
+#include "Commondb.hh"
 
 Vdb::Vdb()
 {
@@ -62,4 +63,27 @@ int Vdb::executeSQLQuery(sqlite3 *db,
 
     return sqlite3_finalize(stmt);
  
+}
+
+int Vdb::updateEntry(CommonAccount *entry){
+
+    int rc;
+    char *iErrMsg = 0;
+
+    Commondb *fCommondb = Commondb::GetInstance();
+
+    string sql = "UPDATE "+ entry->GetProductName() + " SET " \
+        "VALUE = " + to_string(entry->GetValue()) + ", " \
+        "INTRESTRATE = " + to_string(entry->GetIntrestrate()) + " WHERE ID="+ to_string(entry->GetAccountID())  + ";";
+
+    rc = sqlite3_exec(fCommondb->GetDatabase(), sql.c_str(), 0, 0, &iErrMsg);
+
+    if( rc != SQLITE_OK ){
+      fprintf(stderr, "SQL error: %s\n", iErrMsg);
+      sqlite3_free(iErrMsg);
+    } else {
+      fprintf(stdout, "Records created successfully\n");
+    }
+    
+    return(0);
 }

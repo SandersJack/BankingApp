@@ -1,5 +1,6 @@
 #include "Account.hh"
 #include "CurrentAccountdb.hh"
+#include "SavingsAccountdb.hh"
 
 Account::Account(): fAccountID(0), fAccountName(""), fEmail(""), fDOB(0), fPassword(""), fQuestion("")
 {
@@ -64,6 +65,11 @@ vector<int> Account::printAccounts(){
     if(resCA){
         accounts.push_back(0);
     }
-
+    cout << "*********************************************************************" << endl;
+    int resSA = SavingsAccountdb::GetInstance()->printEntry(fAccountID);
+    if(resSA){
+        accounts.push_back(1);
+    }
+    cout << "*********************************************************************" << endl; 
     return accounts;
 }

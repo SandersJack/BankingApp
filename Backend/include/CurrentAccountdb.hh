@@ -17,7 +17,6 @@ class CurrentAccountdb: public Vdb {
 
         int createTable();
         int saveEntry(CurrentAccount *entry);
-        int updateEntry(CurrentAccount *entry);
         int deleteEntry(int id);
 
         int printAllEntry();

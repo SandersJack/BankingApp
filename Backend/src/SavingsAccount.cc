@@ -1,13 +1,13 @@
-#include "CurrentAccount.hh"
+#include "SavingsAccount.hh"
 
-CurrentAccount::CurrentAccount()
+SavingsAccount::SavingsAccount()
 {
     fAccountID = 0;
     fValue = 0;
     fIntrestRate = 0;
 }
 
-CurrentAccount::CurrentAccount(int accountID, double value, double intrestrate)
+SavingsAccount::SavingsAccount(int accountID, double value, double intrestrate)
 {
     fAccountID = accountID;
     fValue = value;
