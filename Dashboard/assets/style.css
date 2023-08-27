@@ -62,7 +62,7 @@ body {
 
 
 .home-footer {
-    color: #097969;
+    background-color: #097969;
     height: 70px;
 }
 
@@ -96,6 +96,10 @@ body {
 .-box {
     float: left;
     width: 50%
+}
+
+.row {
+    height: 960px;
 }
 
 .row:after {

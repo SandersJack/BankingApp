@@ -25,6 +25,14 @@ def get_table_row_count(tablename):
         ''' % tablename
     return run_query(q)["COUNT(1)"][0]
 
+def sum_column(tablename):
+    q = '''
+        SELECT
+            SUM(VALUE)
+        FROM %s;
+        ''' % tablename
+    return run_query(q)["SUM(VALUE)"][0]
+
 tables = show_tables()
 tables["row_count"] = [get_table_row_count(t) for t in tables["name"]]
-print(get_table_row_count("Accounts"))
+print(sum_column("CurrentAccounts"))

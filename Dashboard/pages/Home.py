@@ -31,22 +31,38 @@ def get_table_row_count(tablename):
         ''' % tablename
     return run_query(q)["COUNT(1)"][0]
 
+def sum_column(tablename):
+    q = '''
+        SELECT
+            SUM(VALUE)
+        FROM %s;
+        ''' % tablename
+    return run_query(q)["SUM(VALUE)"][0]
+
 Products = ["CurrentAccounts"]
-
-#tables = show_tables()
-#tables["row_count"] = [get_table_row_count(t) for t in Products]
-#print(get_table_row_count("Accounts"))
-
-data_rows = pd.DataFrame()
-data_rows["name"] = Products
-data_rows["row_count"] = [get_table_row_count(t) for t in Products]
-
-
-
 
 def serve_layout():
     
+    data_rows = pd.DataFrame()
+    data_rows["name"] = Products
+    data_rows["row_count"] = [get_table_row_count(t) for t in Products]
+    
+    
+    NAccounts = get_table_row_count("Accounts")
+    total_value = 0
+    sum_col = [] 
+    for i in range(len(Products)):
+        sum_col.append(sum_column(Products[i]))
+        total_value += sum_col[i]
+    TDeposits = total_value
+    deposits = pd.DataFrame({"Products":Products,
+                    "TValues":sum_col})
+    
     graph = dcc.Graph(id='bar_plot',figure=px.bar(data_rows, x="name", y="row_count",labels={'name':'Products','row_count':'Number'}))
+    
+    figure_dep = px.bar(deposits, x="TValues", color="Products", labels={'TValues':'Total Deposits'}, orientation='h')
+    figure_dep.update_layout(yaxis={'visible': False, 'showticklabels': False})
+    graph_deposits = dcc.Graph(id='bar_plot_deposits',figure=figure_dep)
     
     layout = html.Div(children=[
         html.Div(children=[
@@ -57,8 +73,15 @@ def serve_layout():
                 html.Div(children = [
                     html.Div(children=[
                         html.Div(children=html.H2(children='Number of total accounts'),className="Tnumber-title"),
-                        html.H1(children='{}'.format(get_table_row_count("Accounts")),className="Tnumber")
+                        html.H1(children='{}'.format(NAccounts),className="Tnumber")
                     ], className="Tnumber-innnerbox"),
+                    html.Div(children=[
+                        html.Div(children=html.H2(children='Total deposits'),className="Tnumber-title"),
+                        html.H1(children='£{:.2f}'.format(TDeposits),className="Tnumber")
+                    ], className="Tnumber-innnerbox"),
+                    html.Div(children=[
+                        graph_deposits
+                    ], className="Tnumber-innnerbox")
                 ], className="Tnumber-box"),
                 html.Div(children=[
                     html.Div(children=[
