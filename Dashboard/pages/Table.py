@@ -1,3 +1,11 @@
+import dash
+from dash import html, dcc, callback, Output, dash_table, Input
+import plotly.express as px
+import dash_bootstrap_components as dbc
+
+dash.register_page(__name__, path='/Table')
+
+
 import sqlite3
 import pandas as pd
 
@@ -41,6 +49,20 @@ def get_table(tablename):
         ''' % tablename
     return run_query(q)
 
-tables = show_tables()
-tables["row_count"] = [get_table_row_count(t) for t in tables["name"]]
-print(get_table("CurrentAccounts"))
+Products = ["CurrentAccounts"]
+
+def serve_layout():
+    table = get_table("Accounts")
+
+    layout = dbc.Container([
+    dbc.Label('Click a cell in the table:'),
+    dash_table.DataTable(table.to_dict('records'),[{"name": i, "id": i} for i in table.columns], id='tbl'),
+    dbc.Alert(id='tbl_out'),
+    ])
+    return layout
+
+layout = serve_layout
+
+@callback(Output('tbl_out', 'children'), Input('tbl', 'active_cell'))
+def update_graphs(active_cell):
+    return str(active_cell) if active_cell else "Click the table"

@@ -1,9 +1,11 @@
 import dash
 from dash import Dash, dcc, html, Input, Output
+import dash_bootstrap_components as dbc
 
-app = Dash(__name__, use_pages=True)
+app = Dash(__name__, use_pages=True,external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-pages = ["Home"]
+
+pages = ["Home","Table"]
 
 app.layout = html.Div([
     html.Div(
@@ -18,7 +20,13 @@ app.layout = html.Div([
                     pages[0], href="/", className="nav-link"
                 ),
                 className="nav-bar"
-            )
+            ),
+            html.Div(
+                dcc.Link(
+                    pages[1], href="/Table", className="nav-link"
+                ),
+                className="nav-bar"
+            ),
         ], 
         className="nav-top"
     ),
