@@ -49,20 +49,32 @@ def get_table(tablename):
         ''' % tablename
     return run_query(q)
 
-Products = ["CurrentAccounts"]
+Tables = ["Accounts","CurrentAccounts","SavingsAccounts"]
 
 def serve_layout():
-    table = get_table("Accounts")
 
-    layout = dbc.Container([
-    dbc.Label('Click a cell in the table:'),
-    dash_table.DataTable(table.to_dict('records'),[{"name": i, "id": i} for i in table.columns], id='tbl'),
-    dbc.Alert(id='tbl_out'),
+    layout = html.Div(children=[
+        dcc.Dropdown(id='DropDown_table',
+                options=[
+                         {'label': i, 'value': i} for i in Tables
+                        ],
+               # value=fileNames,
+                placeholder='Select a Table',
+                multi=False,
+                clearable=False
+                ),
+        html.Div(children=[
+            
+        ],id='tbl_out')
     ])
     return layout
 
 layout = serve_layout
 
-@callback(Output('tbl_out', 'children'), Input('tbl', 'active_cell'))
-def update_graphs(active_cell):
-    return str(active_cell) if active_cell else "Click the table"
+@callback(
+            Output('tbl_out', 'children'), 
+            Input('DropDown_table', 'value'))
+def update_figure(DropDown_table):
+    table = get_table(DropDown_table)
+    table_fig = dash_table.DataTable(table.to_dict('records'),[{"name": i, "id": i} for i in table.columns]),
+    return table_fig
