@@ -1,0 +1,19 @@
+name: TestBuild
+
+on: [pull_request, push]
+  branches:
+     - develop
+     - feature/*
+     - bugfix/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Run test Script
+        working-directory: ./
+        uses: ./CI/backendtest.sh
