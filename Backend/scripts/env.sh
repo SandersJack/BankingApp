@@ -1,6 +1,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DIR=$(dirname "$(dirname "${DIR}")")
 
+mkdir -p build
+
 export BackendSOURCE="Backend/"
 echo $BackendSOURCE
 alias Banking="build/Banking"
