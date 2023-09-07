@@ -4,9 +4,8 @@ DIR=$(dirname "$(dirname "${DIR}")")
 mkdir -p build
 
 export BackendSOURCE="Backend/"
-echo $BackendSOURCE
 alias Banking="build/Banking"
 
 alias make_clean="rm build/* -r"
 
-alias make="cmake --build build"
+alias make="cmake -S . -B build; cmake --build build"
