@@ -1,6 +1,6 @@
 name: TestBuild
 
-on: [pull_request, push]
+on: [push]
   branches:
      - develop
      - feature/*
