@@ -8,5 +8,5 @@ shopt -s expand_aliases
 source scripts/env.sh
 
 ls
-make_
+make
 
