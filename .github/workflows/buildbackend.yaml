@@ -17,4 +17,4 @@ jobs:
 
       - name: Run test Script
         working-directory: ./
-        uses: ./CI/backendtest.sh
+        run: ./CI/backendtest.sh
